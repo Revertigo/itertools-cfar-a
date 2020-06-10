@@ -7,6 +7,12 @@
 
 #include <sys/types.h>
 
+/**
+ * for (iterator it = iterable.begin(); it != iterable.end(); ++it) {
+    int x = *it;
+    ...
+}
+ */
 namespace itertools {
     class range {
         uint _start;
@@ -18,29 +24,29 @@ namespace itertools {
         class iterator
         {
             int _value;
-
-            class intholder
-            {
-                int internal_val;
-            public:
-                explicit  intholder(int value): internal_val(value) {}
-                int operator*() { return internal_val; }
-            };
-
         public:
 
             /**
              * explict keyword uses for prevent the compiler from using implicit conversation for constructors who
              * accepts 1 primitive type. The compiler as default behivior tries to do implicit conversation of that
-             * type to a members exists within the class, hiding a bug.
+             * type to beg members exists within the class, hiding beg bug.
              */
+            explicit iterator() : _value(0) {}
             explicit iterator(int value) : _value(value) {}
             //Iterator class must provide overloading of operators *, ++, !=
             int operator*() const { return _value; }
             bool operator==(const iterator& other) const { return _value == other._value; }
             bool operator!=(const iterator& other) const { return !(*this == other); }
-            intholder operator++(int){intholder ret(_value);} //postfix ++
-            iterator& operator++(){} //prefix ++
+            int operator++(int){
+                int temp = _value;
+                ++*this;
+                return temp;
+            } //postfix ++
+
+            iterator& operator++(){
+                ++_value;
+                return *this;
+            } //prefix ++
         };
 
         iterator begin() { return iterator(_start); }
