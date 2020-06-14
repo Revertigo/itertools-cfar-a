@@ -7,18 +7,20 @@
 
 #include <functional>
 #include "range.hpp"
-#include <iostream>
-using namespace std;
+
 namespace itertools {
 
     //template<typename ...> class accumulate;
     //std::plus<int>()
+    template <typename Iter>
+    using Func = std::function<Iter(Iter)>;
+
     template<typename Iter>
     class accumulate {
         Iter & _iter; //We don't want to duplicate the container.
         decltype((_iter.begin())) beg;//decltype uses to deduce runtime type of an object
         decltype((_iter.begin())) end_iter;
-        inline static decltype(*(_iter.begin())) _sum; //type is string/int in this case
+        Func<Iter> f;
 
     public:
         /**
@@ -26,32 +28,32 @@ namespace itertools {
          * accepts 1 primitive type. The compiler as default behivior tries to do implicit conversation of that
          * type to beg members exists within the class, hiding beg bug.
          */
-        explicit accumulate(Iter iter): _iter(iter) {
-            beg = _iter.begin();
-            end_iter = iter.end();
-            //cout << *beg << endl;
-            _sum = *beg;
-        }
+        explicit accumulate(Iter & iter): _iter(iter), beg(_iter.begin()), end_iter(iter.end()) {}
 
+        //We need a reference to reference ctor in order to support passing reference of rvalue
+        explicit accumulate(Iter && iter): _iter(iter), beg(_iter.begin()), end_iter(iter.end()) {}
+
+        template <typename U>
         class iterator{
-            decltype(*(_iter.begin())) _value;
             decltype((_iter.begin())) & _inner_iter;
+            U _sum;
         public:
 
-            iterator(decltype(*(_iter.begin())) value, decltype((_iter.begin())) & inner_iter) : _value(value), _inner_iter(inner_iter) {}
+            iterator(decltype((_iter.begin())) & inner_iter): _inner_iter(inner_iter), _sum(*inner_iter){}
 
             //Iterator class must provide overloading of operators *, ++, !=
-            decltype(*(_iter.begin())) operator*() const { return _sum; }
+            U operator*() const { return _sum; }
             bool operator==(const iterator& other) const { return _inner_iter == other._inner_iter; }
             bool operator!=(const iterator& other) const { return !(*this == other); }
             iterator& operator++(){
                 _inner_iter++;
                 _sum += *_inner_iter;
-                return *this;} //prefix ++
-            };
+                return *this;
+            } //prefix ++
+        };
 
-        iterator begin(){ return iterator(*beg, beg);}
-        iterator end(){ return iterator(*end_iter, end_iter);}
+        iterator<decltype(*(_iter.begin()))> begin(){ return iterator<decltype(*(_iter.begin()))>(beg);}
+        iterator<decltype(*(_iter.begin()))> end(){ return iterator<decltype(*(_iter.begin()))>(end_iter);}
 
     };
     //Declaration on type _sum
