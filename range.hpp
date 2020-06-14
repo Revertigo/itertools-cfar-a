@@ -5,7 +5,7 @@
 #ifndef ITERTOOLS_CFAR_A_RANGE_HPP
 #define ITERTOOLS_CFAR_A_RANGE_HPP
 
-#include <sys/types.h>
+#include <sys/types.h> //uint
 
 /**
  * for (iterator it = iterable.begin(); it != iterable.end(); ++it) {
@@ -19,6 +19,7 @@ namespace itertools {
         uint _end;
 
     public:
+        typedef int value_type;//For compatibility
         range(uint start, uint end): _start(start), _end(end){};
 
         class iterator
@@ -52,7 +53,6 @@ namespace itertools {
         iterator begin() { return iterator(_start); }
         iterator end()   { return iterator(_end); }
     };
-
 }
 
 
