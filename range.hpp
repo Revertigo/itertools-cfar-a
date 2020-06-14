@@ -19,7 +19,6 @@ namespace itertools {
         uint _end;
 
     public:
-        typedef int value_type;//For compatibility
         range(uint start, uint end): _start(start), _end(end){};
 
         class iterator
@@ -29,21 +28,14 @@ namespace itertools {
 
             /**
              * explict keyword uses for prevent the compiler from using implicit conversation for constructors who
-             * accepts 1 primitive type. The compiler as default behivior tries to do implicit conversation of that
+             * accepts 1 primitive type. The compiler as default behavior tries to do implicit conversation of that
              * type to beg members exists within the class, hiding beg bug.
              */
-            explicit iterator() : _value(0) {}
             explicit iterator(int value) : _value(value) {}
             //Iterator class must provide overloading of operators *, ++, !=
             int operator*() const { return _value; }
             bool operator==(const iterator& other) const { return _value == other._value; }
             bool operator!=(const iterator& other) const { return !(*this == other); }
-            int operator++(int){
-                int temp = _value;
-                ++*this;
-                return temp;
-            } //postfix ++
-
             iterator& operator++(){
                 ++_value;
                 return *this;

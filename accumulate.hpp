@@ -25,13 +25,19 @@ namespace itertools {
     public:
         /**
          * explict keyword uses for prevent the compiler from using implicit conversation for constructors who
-         * accepts 1 primitive type. The compiler as default behivior tries to do implicit conversation of that
+         * accepts 1 primitive type. The compiler as default behavior tries to do implicit conversation of that
          * type to beg members exists within the class, hiding beg bug.
          */
         explicit accumulate(Iter & iter): _iter(iter), beg(_iter.begin()), end_iter(iter.end()) {}
 
-        //We need a reference to reference ctor in order to support passing reference of rvalue
+        //We need a reference to reference ctor in order to support passing reference of rvalue(for range())
         explicit accumulate(Iter && iter): _iter(iter), beg(_iter.begin()), end_iter(iter.end()) {}
+
+
+        explicit accumulate(Iter && iter, Func<Iter> functor): _iter(iter), f(functor){
+            beg = _iter.begin();
+            end_iter = iter.end();
+        }
 
         template <typename U>
         class iterator{
@@ -46,7 +52,7 @@ namespace itertools {
             bool operator==(const iterator& other) const { return _inner_iter == other._inner_iter; }
             bool operator!=(const iterator& other) const { return !(*this == other); }
             iterator& operator++(){
-                _inner_iter++;
+                ++_inner_iter;
                 _sum += *_inner_iter;
                 return *this;
             } //prefix ++
@@ -56,9 +62,6 @@ namespace itertools {
         iterator<decltype(*(_iter.begin()))> end(){ return iterator<decltype(*(_iter.begin()))>(end_iter);}
 
     };
-    //Declaration on type _sum
-//    template<typename Iter>
-//    typename Iter::value_type accumulate<Iter>:: _sum;
 
 
     /**
