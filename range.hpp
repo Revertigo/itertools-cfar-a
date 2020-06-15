@@ -29,7 +29,7 @@ namespace itertools {
             /**
              * explict keyword uses for prevent the compiler from using implicit conversation for constructors who
              * accepts 1 primitive type. The compiler as default behavior tries to do implicit conversation of that
-             * type to beg members exists within the class, hiding beg bug.
+             * type to a members exists within the class, hiding a bug.
              */
             explicit iterator(int value) : _value(value) {}
             //Iterator class must provide overloading of operators *, ++, !=

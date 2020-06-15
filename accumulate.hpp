@@ -6,7 +6,6 @@
 #define ITERTOOLS_CFAR_A_ACCUMULATE_HPP
 
 #include <functional>
-#include "range.hpp"
 
 namespace itertools {
 
@@ -26,7 +25,7 @@ namespace itertools {
         /**
          * explict keyword uses for prevent the compiler from using implicit conversation for constructors who
          * accepts 1 primitive type. The compiler as default behavior tries to do implicit conversation of that
-         * type to beg members exists within the class, hiding beg bug.
+         * type to a members exists within the class, hiding a bug.
          */
         explicit accumulate(Iter & iter): _iter(iter), beg(_iter.begin()), end_iter(iter.end()) {}
 
@@ -58,8 +57,8 @@ namespace itertools {
             } //prefix ++
         };
 
-        iterator<decltype(*(_iter.begin()))> begin(){ return iterator<decltype(*(_iter.begin()))>(beg);}
-        iterator<decltype(*(_iter.begin()))> end(){ return iterator<decltype(*(_iter.begin()))>(end_iter);}
+        auto begin(){ return iterator<decltype(*(_iter.begin()))>(beg);}
+        auto end(){ return iterator<decltype(*(_iter.begin()))>(end_iter);}
 
     };
 

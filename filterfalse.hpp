@@ -10,23 +10,23 @@
 namespace itertools {
     template< typename functor, typename Iter>
     class filterfalse {
+        functor _functor;
         Iter & _iter;
-        functor _f;
         decltype((_iter.begin())) beg;//decltype uses to deduce runtime type of an object
         decltype((_iter.end())) end_iter;
 
     public:
-        filterfalse(functor f, Iter && iter):  _f(f), _iter(iter), beg(_iter.begin()), end_iter(iter.end()){}
-        filterfalse(functor f, Iter & iter):  _f(f), _iter(iter), beg(_iter.begin()), end_iter(iter.end()){}
+        filterfalse(functor func, Iter && iter): _functor(func), _iter(iter), beg(_iter.begin()), end_iter(iter.end()){}
+        filterfalse(functor func, Iter & iter): _functor(func), _iter(iter), beg(_iter.begin()), end_iter(iter.end()){}
 
         class iterator
         {
-            functor filter;
+            functor _filter;
             decltype((_iter.begin())) & _inner_iter;
             Iter & _it;
             void normalize()
             {
-                for(; _inner_iter != _it.end() && filter(*_inner_iter); ++_inner_iter);//jump who ever not matching the filter
+                for(; _inner_iter != _it.end() && _filter(*_inner_iter); ++_inner_iter);//skip who ever not matching the filter
             }
 
         public:
@@ -34,9 +34,9 @@ namespace itertools {
             /**
              * explict keyword uses for prevent the compiler from using implicit conversation for constructors who
              * accepts 1 primitive type. The compiler as default behavior tries to do implicit conversation of that
-             * type to beg members exists within the class, hiding beg bug.
+             * type to a members exists within the class, hiding a bug.
              */
-            iterator(functor operation, decltype((_iter.begin())) & inner_iter, Iter & it) : filter(operation), _inner_iter(inner_iter), _it(it)
+            iterator(functor operation, decltype((_iter.begin())) & inner_iter, Iter & it) : _filter(operation), _inner_iter(inner_iter), _it(it)
             {
                 normalize();//We have to check the first element inside the ctor
             }
@@ -53,8 +53,8 @@ namespace itertools {
             } //prefix ++
         };
 
-        iterator begin() { return iterator(_f, beg, _iter); }
-        iterator end()   { return iterator(_f, end_iter, _iter); }
+        iterator begin() { return iterator(_functor, beg, _iter); }
+        iterator end()   { return iterator(_functor, end_iter, _iter); }
     };
 }
 
