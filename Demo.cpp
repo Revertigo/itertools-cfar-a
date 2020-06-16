@@ -42,9 +42,9 @@ int main(int argc, const char * argv[]) {
         cout << i << " ";  // Hello HelloBye HelloByeAdam
     cout << endl << endl;
 
-//    cout << endl << "accumulate of range with binary operator: " << endl;
-//    for (int i: accumulate(range(5,9), [](int x, int y){return x*y;}))
-//        cout << i << " ";      // 5 30 210 1680
+    cout << endl << "accumulate of range with binary operator: " << endl;
+    for (int i: accumulate(range(5,9), [](int x, int y){return x*y;}))
+        cout << i << " ";      // 5 30 210 1680
 
     cout << "####  Filter False:  ####";
     cout << endl << "Filter out all numbers less than 3 in vector{1,2,3,4}: " << endl;
